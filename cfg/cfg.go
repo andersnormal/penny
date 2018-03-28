@@ -33,15 +33,23 @@ const (
 
 	// DefaultVerbose is the default verbosity.
 	DefaultVerbose = false
+
+	// DefaultRecursive is the default for recursive lookup.
+	DefaultRecursive = true
+
+	// DefaultWithDecryption is the default for decryption.
+	DefaultWithDecryption = true
 )
 
 // New is returning a new config with default paramaeters
 func New() *Config {
 	return &Config{
-		Verbose:      DefaultVerbose,
-		LogLevel:     DefaultLogLevel,
-		ReloadSignal: DefaultReloadSignal,
-		KillSignal:   DefaultKillSignal,
+		Verbose:        DefaultVerbose,
+		LogLevel:       DefaultLogLevel,
+		ReloadSignal:   DefaultReloadSignal,
+		KillSignal:     DefaultKillSignal,
+		WithDecryption: DefaultWithDecryption,
+		Recursive:      DefaultRecursive,
 	}
 }
 
@@ -51,4 +59,14 @@ func Must(session *session.Session) *Config {
 	c.Session = session
 
 	return c
+}
+
+// Bool returns a pointer to a boolean
+func Bool(f bool) *bool {
+	return &f
+}
+
+// String returns a pointer to a string
+func String(f string) *string {
+	return &f
 }

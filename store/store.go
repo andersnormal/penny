@@ -16,11 +16,14 @@ package store
 
 import (
 	"github.com/aws/aws-sdk-go/service/ssm"
-	"github.com/aws/aws-sdk-go/service/ssm/ssmiface"
 )
 
 // New returns a new Store with the fetched parameters, and service id
-func New(ssm *ssmiface.SSMAPI, ssmPath *string, recursive *bool, withDecryption *bool) (store *SSMStore, err error) {
+func New(ssm *ssm.SSM, ssmPath *string, recursive *bool, withDecryption *bool) (*SSMStore, error) {
+	var err error
+	var store = new(SSMStore)
+
+	store.ssm = ssm
 	store.ssmPath = ssmPath
 	store.recursive = recursive
 	store.withDecryption = withDecryption

@@ -12,4 +12,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package root
+package env
+
+import (
+	"sync"
+
+	"github.com/axelspringer/templeton/store"
+)
+
+// Env is the root cmd of Templeton
+type Env struct {
+	sync.Mutex
+
+	store *store.SSMStore
+}

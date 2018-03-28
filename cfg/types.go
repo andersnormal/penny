@@ -37,4 +37,13 @@ type Config struct {
 
 	// Session is an AWS session
 	Session *session.Session
+
+	// SSMPath is the path to reference in the SSM
+	SSMPath string
+
+	// Recursive lookup
+	Recursive bool
+
+	// With decryption
+	WithDecryption bool
 }

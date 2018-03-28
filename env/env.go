@@ -12,26 +12,19 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package store
+package env
 
-import (
-	"sync"
+import "github.com/axelspringer/templeton/store"
 
-	"github.com/aws/aws-sdk-go/service/ssm"
-)
-
-// ParameterStore represents the interface to the parameter store of SSM which needs to be implemented.
-type ParameterStore interface {
-	Parameters() ([]*ssm.Parameter, error)
+// New creates a new command line interface.
+func New() *Env {
+	return &Env{}
 }
 
-// SSMStore contains the data, and clients to access the paramter store of SSM
-type SSMStore struct {
-	recursive      *bool
-	withDecryption *bool
-	parameters     []*ssm.Parameter
-	ssm            *ssm.SSM
-	ssmPath        *string
+// Must returns a new Env with required parameters
+func Must(store *store.SSMStore) *Env {
+	e := New()
+	e.store = store
 
-	mux sync.Mutex
+	return e
 }

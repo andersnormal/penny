@@ -19,21 +19,25 @@ import (
 	"os"
 
 	"github.com/aws/aws-sdk-go/aws/session"
-	c "github.com/axelspringer/templeton/cfg"
-	"github.com/axelspringer/templeton/root"
+	"github.com/aws/aws-sdk-go/service/ssm"
+	config "github.com/axelspringer/templeton/cfg"
+	"github.com/axelspringer/templeton/env"
+	"github.com/axelspringer/templeton/store"
 	homedir "github.com/mitchellh/go-homedir"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
 
-var cfgFile string
-var cfg *c.Config
+var (
+	cfgFile string
+	cfg     *config.Config
+)
 
 // RootCmd represents the base command when called without any subcommands
 var RootCmd = &cobra.Command{
 	Use:   "templeton",
 	Short: "Executes a subprocess with environment variables from SSM",
-	RunE:  root.RunE,
+	RunE:  runE,
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.
@@ -50,7 +54,7 @@ func init() {
 	session := session.Must(session.NewSession())
 
 	// Init a new Config
-	cfg = c.Must(session)
+	cfg = config.Must(session)
 
 	// Init Cobra config
 	cobra.OnInitialize(initConfig)
@@ -62,6 +66,15 @@ func init() {
 
 	// Set the verbosity
 	RootCmd.PersistentFlags().BoolVarP(&cfg.Verbose, "verbose", "v", cfg.Verbose, "enable verbose logging")
+
+	// SSMPAth
+	RootCmd.Flags().StringVarP(&cfg.SSMPath, "path", "p", "", "path in the SSM")
+
+	// Recursive lookup
+	RootCmd.Flags().BoolVarP(&cfg.Recursive, "recursive", "r", cfg.Recursive, "recursive lookup")
+
+	// With decryption
+	RootCmd.Flags().BoolVarP(&cfg.WithDecryption, "decrypt", "d", cfg.WithDecryption, "disable decryption")
 }
 
 // initConfig reads in config file and ENV variables if set.
@@ -89,4 +102,16 @@ func initConfig() {
 	if err := viper.ReadInConfig(); err == nil {
 		fmt.Println("Using config file:", viper.ConfigFileUsed())
 	}
+}
+
+// runE is running the root command of Templeton
+func runE(cmd *cobra.Command, args []string) error {
+	var err error
+
+	svc := ssm.New(cfg.Session)
+
+	_, err = store.New(svc, config.String(cfg.SSMPath), config.Bool(cfg.Recursive), config.Bool(cfg.WithDecryption))
+	_ = env.New()
+
+	return err
 }
