@@ -1,0 +1,10 @@
+{
+  "*": {
+    "promptValues": {
+      "app": "templeton",
+      "vendor": false,
+      "dep": true,
+      "cobra": true
+    }
+  }
+}
