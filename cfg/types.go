@@ -12,21 +12,29 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package main
+package cfg
 
 import (
-	"math/rand"
-	"time"
+	"syscall"
 
-	"github.com/axelspringer/templeton/cmd"
+	"github.com/aws/aws-sdk-go/aws/session"
+	log "github.com/sirupsen/logrus"
 )
 
-func init() {
-	// Seed the default rand Source with current time to produce better random
-	// numbers used with splay
-	rand.Seed(time.Now().UnixNano())
-}
+// Config contains a current config of Templeton
+type Config struct {
+	// Verbose toggles the verbosity
+	Verbose bool
 
-func main() {
-	cmd.Execute()
+	// LogLevel is the level with with to log for this config
+	LogLevel log.Level
+
+	// ReloadSignal
+	ReloadSignal syscall.Signal
+
+	// KillSignal
+	KillSignal syscall.Signal
+
+	// Session is an AWS session
+	Session *session.Session
 }

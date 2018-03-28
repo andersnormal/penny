@@ -12,21 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package main
+package root
 
 import (
-	"math/rand"
-	"time"
-
-	"github.com/axelspringer/templeton/cmd"
+	"github.com/spf13/cobra"
 )
 
-func init() {
-	// Seed the default rand Source with current time to produce better random
-	// numbers used with splay
-	rand.Seed(time.Now().UnixNano())
-}
+// RunE the root command of Tempelton
+func RunE(cmd *cobra.Command, args []string) (err error) {
 
-func main() {
-	cmd.Execute()
+	return nil
 }

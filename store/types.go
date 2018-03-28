@@ -12,21 +12,27 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package main
+package store
 
 import (
-	"math/rand"
-	"time"
+	"sync"
 
-	"github.com/axelspringer/templeton/cmd"
+	"github.com/aws/aws-sdk-go/service/ssm"
+	"github.com/aws/aws-sdk-go/service/ssm/ssmiface"
 )
 
-func init() {
-	// Seed the default rand Source with current time to produce better random
-	// numbers used with splay
-	rand.Seed(time.Now().UnixNano())
+// ParameterStore represents the interface to the parameter store of SSM which needs to be implemented.
+type ParameterStore interface {
+	Parameters() ([]*ssm.Parameter, error)
 }
 
-func main() {
-	cmd.Execute()
+// SSMStore contains the data, and clients to access the paramter store of SSM
+type SSMStore struct {
+	recursive      *bool
+	withDecryption *bool
+	parameters     []*ssm.Parameter
+	ssm            ssmiface.SSMAPI
+	ssmPath        *string
+
+	mux sync.Mutex
 }

@@ -12,21 +12,4 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package main
-
-import (
-	"math/rand"
-	"time"
-
-	"github.com/axelspringer/templeton/cmd"
-)
-
-func init() {
-	// Seed the default rand Source with current time to produce better random
-	// numbers used with splay
-	rand.Seed(time.Now().UnixNano())
-}
-
-func main() {
-	cmd.Execute()
-}
+package cfg
