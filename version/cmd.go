@@ -23,6 +23,9 @@ import (
 // Cmd exports the run command
 var Cmd *cobra.Command
 
+// Version exports the version number of the current build
+var Version = "0.0.1"
+
 // exports command by default
 func init() {
 	Cmd = &cobra.Command{
@@ -33,8 +36,5 @@ func init() {
 }
 
 func run(cmd *cobra.Command, args []string) {
-	fmt.Printf("Version %s", Version)
+	fmt.Printf("Version: %s", Version)
 }
-
-// Version exports the version number of the current build
-const Version = "0.0.1"

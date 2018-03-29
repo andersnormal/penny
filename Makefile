@@ -1,6 +1,11 @@
 PACKAGES=$(shell go list ./... | grep -v /vendor/)
 RACE := $(shell test $$(go env GOARCH) != "amd64" || (echo "-race"))
-VERSION := $(shell grep "const Version " ./version/cmd.go | sed -E 's/.*"(.+)"$$/\1/')
+
+# target
+VERSION := `git rev-parse --short HEAD`
+
+# Use linker flags to provide version/build settings to the target
+LDFLAGS=-ldflags "-X=github.com/axelspringer/templeton/version.Version=$(VERSION)"
 
 help:
 	@echo 'Available commands:'
@@ -24,7 +29,7 @@ deps:
 build:
 	@echo "Compiling..."
 	@mkdir -p ./bin
-	@gox -output "bin/{{.Dir}}_{{.OS}}_{{.Arch}}" -os="linux" -os="darwin" -arch="386" -arch="amd64" ./
+	@gox $(LDFLAGS) -output "bin/{{.Dir}}_{{.OS}}_{{.Arch}}" -os="linux" -os="darwin" -arch="386" -arch="amd64" ./
 	@go build -i -o ./bin/templeton
 	@echo "All done! The binaries is in ./bin let's have fun!"
 
