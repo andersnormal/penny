@@ -94,6 +94,9 @@ func runE(cmd *cobra.Command, args []string) error {
 	}))
 	ssmSvc := ssm.New(session)
 
+	// set path
+	cfg.SSMPath = viper.GetString("path")
+
 	// create a new SSM store and SSM environment
 	ssmStore, err := store.Must(ctx, ssmSvc)
 	if err != nil {

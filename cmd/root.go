@@ -51,6 +51,10 @@ func init() {
 	// Init Cobra config
 	cobra.OnInitialize(initConfig)
 
+	// silence on the root cmd
+	RootCmd.SilenceErrors = true
+	RootCmd.SilenceUsage = true
+
 	// add run command
 	RootCmd.AddCommand(run.Cmd)
 
