@@ -23,10 +23,6 @@ install:
 - make restore
 - export CI=TRAVIS
 
-go:
-- 1.8
-- 1.9
-
 script:
 - make ci
 - if [ "${LATEST}" = "true" ]; then make build; fi
