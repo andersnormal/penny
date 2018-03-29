@@ -24,6 +24,7 @@ import (
 	"time"
 
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
@@ -71,6 +72,9 @@ func init() {
 
 	// Overwrite existing envs
 	Cmd.Flags().BoolVar(&cfg.Overwrite, "overwrite", cfg.Overwrite, "overwrite existing environment variables")
+
+	// bind to read in
+	viper.BindPFlag("path", Cmd.Flags().Lookup("path"))
 
 	// parse arbitrary args at the end
 	Cmd.Args = cobra.ArbitraryArgs

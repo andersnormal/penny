@@ -20,6 +20,7 @@ import (
 
 	config "github.com/axelspringer/templeton/cfg"
 	"github.com/axelspringer/templeton/run"
+	"github.com/axelspringer/templeton/version"
 	homedir "github.com/mitchellh/go-homedir"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -53,6 +54,9 @@ func init() {
 	// add run command
 	RootCmd.AddCommand(run.Cmd)
 
+	// add version command
+	RootCmd.AddCommand(version.Cmd)
+
 	// Here you will define your flags and configuration settings.
 	// Cobra supports persistent flags, which, if defined here,
 	// will be global for your application.
@@ -60,10 +64,16 @@ func init() {
 
 	// Set the verbosity
 	RootCmd.PersistentFlags().BoolVarP(&cfg.Verbose, "verbose", "v", cfg.Verbose, "enable verbose logging")
+
+	// Bind to read in
+	viper.BindPFlag("verbose", RootCmd.PersistentFlags().Lookup("verbose"))
 }
 
 // initConfig reads in config file and ENV variables if set.
 func initConfig() {
+	// set specific prefix
+	viper.SetEnvPrefix("TEMPLETON")
+
 	// read in files
 	if cfgFile != "" {
 		// Use config file from the flag.
@@ -92,8 +102,6 @@ func initConfig() {
 // runE is running the root command of Templeton
 func runE(cmd *cobra.Command, args []string) error {
 	var err error
-
-	fmt.Println(cmd.Args)
 
 	return err // noop
 
