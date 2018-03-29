@@ -24,7 +24,7 @@ deps:
 build:
 	@echo "Compiling..."
 	@mkdir -p ./bin
-	@gox -output "bin/{{.Dir}}_${VERSION}_{{.OS}}_{{.Arch}}" -os="linux" -os="darwin" -arch="386" -arch="amd64" ./
+	@gox -output "bin/{{.Dir}}_{{.OS}}_{{.Arch}}" -os="linux" -os="darwin" -arch="386" -arch="amd64" ./
 	@go build -i -o ./bin/templeton
 	@echo "All done! The binaries is in ./bin let's have fun!"
 
