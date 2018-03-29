@@ -1,6 +1,7 @@
+[![Build Status](https://travis-ci.org/axelspringer/templeton.svg?branch=master)](https://travis-ci.org/axelspringer/templeton)
 [![Taylor Swift](https://img.shields.io/badge/secured%20by-taylor%20swift-brightgreen.svg)](https://twitter.com/SwiftOnSecurity)
 [![Volkswagen](https://auchenberg.github.io/volkswagen/volkswargen_ci.svg?v=1)](https://github.com/auchenberg/volkswagen)
-[![MIT license](http://img.shields.io/badge/license-MIT-brightgreen.svg)](http://opensource.org/licenses/MIT)
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
 # Templeton
 
@@ -28,4 +29,4 @@ You can use `--help` to print out all the available options.
 Configures the path in the Parameter Store from which to fetch the configs.
 
 ## License
-[MIT](/LICENSE)
+[Apache-2.0](/LICENSE)
