@@ -29,7 +29,7 @@ go:
 
 script:
 - make ci
-- if [ "${LATEST}" = "true" ]; make build; fi
+- if [ "${LATEST}" = "true" ]; then make build; fi
 
 deploy:
   provider: releases
