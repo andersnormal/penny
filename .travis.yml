@@ -22,7 +22,7 @@ install:
 
 script:
 - make ci
-- if [ "${LATEST}" = "true" ]; then make build; fi
+- if [ "${LATEST}" = "true" ]; then make build/release; fi
 
 deploy:
   provider: releases

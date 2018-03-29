@@ -1,3 +1,3 @@
-FROM scratch
-ADD bin/templeton_*_linux_amd64 /templeton
+FROM alpine:3.7
+ADD bin/templeton_linux_amd64 /templeton
 CMD ["/templeton"]

@@ -33,6 +33,13 @@ build:
 	@go build -i -o ./bin/templeton
 	@echo "All done! The binaries is in ./bin let's have fun!"
 
+build/release:
+	@echo "Compiling..."
+	@mkdir -p ./bin
+	@gox $(LDFLAGS) -tags netgo -ldflags '-w -extldflags "-static"' -output "bin/{{.Dir}}_{{.OS}}_{{.Arch}}" -os="linux" -os="darwin" -arch="386" -arch="amd64" ./
+	@go build -i -o ./bin/templeton
+	@echo "All done! The binaries is in ./bin let's have fun!"
+ 
 build/docker: build
 	@docker build -t templeton:latest .
 
