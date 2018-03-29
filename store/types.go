@@ -15,6 +15,7 @@
 package store
 
 import (
+	"context"
 	"sync"
 
 	"github.com/aws/aws-sdk-go/service/ssm"
@@ -33,5 +34,6 @@ type SSMStore struct {
 	ssm            *ssm.SSM
 	ssmPath        *string
 
+	ctx context.Context
 	mux sync.Mutex
 }

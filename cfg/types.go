@@ -16,13 +16,13 @@ package cfg
 
 import (
 	"syscall"
+	"time"
 
-	"github.com/aws/aws-sdk-go/aws/session"
 	log "github.com/sirupsen/logrus"
 )
 
-// Config contains a current config of Templeton
-type Config struct {
+// CmdConfig contains a current config of Templeton
+type CmdConfig struct {
 	// Verbose toggles the verbosity
 	Verbose bool
 
@@ -35,9 +35,6 @@ type Config struct {
 	// KillSignal
 	KillSignal syscall.Signal
 
-	// Session is an AWS session
-	Session *session.Session
-
 	// SSMPath is the path to reference in the SSM
 	SSMPath string
 
@@ -46,4 +43,16 @@ type Config struct {
 
 	// With decryption
 	WithDecryption bool
+
+	// AWS Region
+	Region string
+
+	// Timeout of the runtime
+	Timeout time.Duration
+
+	// Prefix for the environment variable in runtime to use
+	Prefix string
+
+	// Overwrite existing environment variables
+	Overwrite bool
 }

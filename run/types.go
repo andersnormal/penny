@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package env
+package run
 
 import (
 	"sync"
@@ -20,9 +20,16 @@ import (
 	"github.com/axelspringer/templeton/store"
 )
 
-// Env is the root cmd of Templeton
-type Env struct {
+// Runner is the interface to a runtime environment
+type Runner interface {
+	// Setup should setup the runtime environment
+	Exec() error
+}
+
+// Run is a runtime environment for SSM
+type Run struct {
 	sync.Mutex
 
+	args  []string
 	store *store.SSMStore
 }

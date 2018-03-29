@@ -15,18 +15,29 @@
 package store
 
 import (
+	"context"
+
 	"github.com/aws/aws-sdk-go/service/ssm"
+	config "github.com/axelspringer/templeton/cfg"
 )
 
-// New returns a new Store with the fetched parameters, and service id
-func New(ssm *ssm.SSM, ssmPath *string, recursive *bool, withDecryption *bool) (*SSMStore, error) {
-	var err error
-	var store = new(SSMStore)
+var cfg = config.Config
 
+// New returns a new Store with the fetched parameters, and service id
+func New() *SSMStore {
+	return &SSMStore{}
+}
+
+// Must returns a new Store with parameters configured
+func Must(ctx context.Context, ssm *ssm.SSM) (*SSMStore, error) {
+	var err error
+	var store = New()
+
+	store.ctx = ctx
 	store.ssm = ssm
-	store.ssmPath = ssmPath
-	store.recursive = recursive
-	store.withDecryption = withDecryption
+	store.ssmPath = config.String(cfg.SSMPath)
+	store.recursive = config.Bool(cfg.Recursive)
+	store.withDecryption = config.Bool(cfg.WithDecryption)
 
 	_, err = store.getParameters(nil) // harvest err
 
@@ -46,6 +57,7 @@ func (s *SSMStore) getParameters(nextToken *string) (parameters []*ssm.Parameter
 	// input to the SSM to get parameters by path
 	input := &ssm.GetParametersByPathInput{
 		Path:           s.ssmPath,
+		Recursive:      s.recursive,
 		WithDecryption: s.withDecryption,
 	}
 
@@ -53,7 +65,7 @@ func (s *SSMStore) getParameters(nextToken *string) (parameters []*ssm.Parameter
 		input.NextToken = nextToken
 	}
 
-	output, err := s.ssm.GetParametersByPath(input)
+	output, err := s.ssm.GetParametersByPathWithContext(s.ctx, input)
 	if err != nil {
 		return parameters, err
 	}

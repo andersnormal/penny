@@ -18,11 +18,8 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/aws/aws-sdk-go/aws/session"
-	"github.com/aws/aws-sdk-go/service/ssm"
 	config "github.com/axelspringer/templeton/cfg"
-	"github.com/axelspringer/templeton/env"
-	"github.com/axelspringer/templeton/store"
+	"github.com/axelspringer/templeton/run"
 	homedir "github.com/mitchellh/go-homedir"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -30,7 +27,7 @@ import (
 
 var (
 	cfgFile string
-	cfg     *config.Config
+	cfg     = config.Config
 )
 
 // RootCmd represents the base command when called without any subcommands
@@ -50,14 +47,11 @@ func Execute() {
 }
 
 func init() {
-	// new AWS Session
-	session := session.Must(session.NewSession())
-
-	// Init a new Config
-	cfg = config.Must(session)
-
 	// Init Cobra config
 	cobra.OnInitialize(initConfig)
+
+	// add run command
+	RootCmd.AddCommand(run.Cmd)
 
 	// Here you will define your flags and configuration settings.
 	// Cobra supports persistent flags, which, if defined here,
@@ -66,15 +60,6 @@ func init() {
 
 	// Set the verbosity
 	RootCmd.PersistentFlags().BoolVarP(&cfg.Verbose, "verbose", "v", cfg.Verbose, "enable verbose logging")
-
-	// SSMPAth
-	RootCmd.Flags().StringVarP(&cfg.SSMPath, "path", "p", "", "path in the SSM")
-
-	// Recursive lookup
-	RootCmd.Flags().BoolVarP(&cfg.Recursive, "recursive", "r", cfg.Recursive, "recursive lookup")
-
-	// With decryption
-	RootCmd.Flags().BoolVarP(&cfg.WithDecryption, "decrypt", "d", cfg.WithDecryption, "disable decryption")
 }
 
 // initConfig reads in config file and ENV variables if set.
@@ -108,10 +93,17 @@ func initConfig() {
 func runE(cmd *cobra.Command, args []string) error {
 	var err error
 
-	svc := ssm.New(cfg.Session)
+	fmt.Println(cmd.Args)
 
-	_, err = store.New(svc, config.String(cfg.SSMPath), config.Bool(cfg.Recursive), config.Bool(cfg.WithDecryption))
-	_ = env.New()
+	return err // noop
 
-	return err
+	// save for latet
+	// for {
+	// 	select {
+	// 	case <-ctx.Done():
+	// 		err = ctx.Err()
+	// 		return err
+	// 	default:
+	// 	}
+	// }
 }

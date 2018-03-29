@@ -17,9 +17,11 @@ package cfg
 import (
 	"syscall"
 
-	"github.com/aws/aws-sdk-go/aws/session"
 	log "github.com/sirupsen/logrus"
 )
+
+// Config exports a reusable config
+var Config *CmdConfig
 
 const (
 	// DefaultLogLevel is the default logging level.
@@ -39,26 +41,33 @@ const (
 
 	// DefaultWithDecryption is the default for decryption.
 	DefaultWithDecryption = true
+
+	// DefaultRegion is the default AWS region
+	DefaultRegion = "eu-west-1"
+
+	// DefaultTimeout is the default time to configure the runtime
+	DefaultTimeout = 60
+
+	// DefaultPrefix for the environment variables
+	DefaultPrefix = "SSM"
+
+	// DefaultOverwrite for environment variables
+	DefaultOverwrite = false
 )
 
-// New is returning a new config with default paramaeters
-func New() *Config {
-	return &Config{
+func init() {
+	Config = &CmdConfig{
 		Verbose:        DefaultVerbose,
 		LogLevel:       DefaultLogLevel,
 		ReloadSignal:   DefaultReloadSignal,
 		KillSignal:     DefaultKillSignal,
 		WithDecryption: DefaultWithDecryption,
 		Recursive:      DefaultRecursive,
+		Prefix:         DefaultPrefix,
+		Region:         DefaultRegion,
+		Timeout:        DefaultTimeout,
+		Overwrite:      DefaultOverwrite,
 	}
-}
-
-// Must returns a new Config with required parameters
-func Must(session *session.Session) *Config {
-	c := New()
-	c.Session = session
-
-	return c
 }
 
 // Bool returns a pointer to a boolean
