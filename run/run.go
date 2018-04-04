@@ -73,6 +73,9 @@ func init() {
 	// Overwrite existing envs
 	Cmd.Flags().BoolVar(&cfg.Overwrite, "overwrite", cfg.Overwrite, "overwrite existing environment variables")
 
+	// Force execution
+	Cmd.Flags().BoolVar(&cfg.Force, "force", cfg.Force, "force run the command")
+
 	// bind to read in
 	viper.BindPFlag("path", Cmd.Flags().Lookup("path"))
 
@@ -99,7 +102,7 @@ func runE(cmd *cobra.Command, args []string) error {
 
 	// create a new SSM store and SSM environment
 	ssmStore, err := store.Must(ctx, ssmSvc)
-	if err != nil {
+	if !cfg.Force && err != nil {
 		return err
 	}
 
@@ -110,7 +113,7 @@ func runE(cmd *cobra.Command, args []string) error {
 	// do simple execute, should be more complex later
 	run.Exec()
 
-	return nil
+	return nil // noop
 }
 
 // Exec is setting up the environment with the configured store
@@ -130,11 +133,14 @@ func (e *Run) Exec() error {
 	cmd := exec.Command(execCmd, execArgs...)
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
+
 	env, err := e.Env()
-	if err != nil {
+	if !cfg.Force || err != nil {
 		return err
 	}
 	cmd.Env = append(os.Environ(), env...)
+
+	// todo: listen for syscalls
 
 	// exec
 	err = cmd.Start()
@@ -144,7 +150,7 @@ func (e *Run) Exec() error {
 
 	err = cmd.Wait()
 
-	return err
+	return err // on error
 }
 
 // Env returns an environment

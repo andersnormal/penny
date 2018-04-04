@@ -53,6 +53,9 @@ const (
 
 	// DefaultOverwrite for environment variables
 	DefaultOverwrite = false
+
+	// DefaultForce for environment setup
+	DefaultForce = false
 )
 
 func init() {
@@ -67,6 +70,7 @@ func init() {
 		Region:         DefaultRegion,
 		Timeout:        DefaultTimeout,
 		Overwrite:      DefaultOverwrite,
+		Force:          DefaultForce,
 	}
 }
 

@@ -55,4 +55,7 @@ type CmdConfig struct {
 
 	// Overwrite existing environment variables
 	Overwrite bool
+
+	// Force execution
+	Force bool
 }
