@@ -135,7 +135,7 @@ func (e *Run) Exec() error {
 	cmd.Stderr = os.Stderr
 
 	env, err := e.Env()
-	if !cfg.Force || err != nil {
+	if !cfg.Force && err != nil {
 		return err
 	}
 	cmd.Env = append(os.Environ(), env...)
