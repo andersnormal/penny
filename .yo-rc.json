@@ -1,7 +1,7 @@
 {
   "*": {
     "promptValues": {
-      "app": "templeton",
+      "app": "penny",
       "vendor": false,
       "dep": true,
       "cobra": true

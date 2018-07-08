@@ -1,3 +1,4 @@
+// Copyright 2018 Sebastian Döll
 // Copyright 2018 Axel Springer SE
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -26,11 +27,11 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 
+	config "github.com/andersnormal/penny/cfg"
+	"github.com/andersnormal/penny/store"
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/ssm"
-	config "github.com/axelspringer/templeton/cfg"
-	"github.com/axelspringer/templeton/store"
 )
 
 // Cmd exports the run command

@@ -1,3 +1,4 @@
+// Copyright 2018 Sebastian Döll
 // Copyright 2018 Axel Springer SE
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,9 +19,9 @@ import (
 	"fmt"
 	"os"
 
-	config "github.com/axelspringer/templeton/cfg"
-	"github.com/axelspringer/templeton/run"
-	"github.com/axelspringer/templeton/version"
+	config "github.com/andersnormal/penny/cfg"
+	"github.com/andersnormal/penny/run"
+	"github.com/andersnormal/penny/version"
 	homedir "github.com/mitchellh/go-homedir"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -33,7 +34,7 @@ var (
 
 // RootCmd represents the base command when called without any subcommands
 var RootCmd = &cobra.Command{
-	Use:   "templeton",
+	Use:   "penny",
 	Short: "Executes a subprocess with environment variables from SSM",
 	RunE:  runE,
 }
@@ -64,7 +65,7 @@ func init() {
 	// Here you will define your flags and configuration settings.
 	// Cobra supports persistent flags, which, if defined here,
 	// will be global for your application.
-	RootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.templeton.yaml)")
+	RootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.penny.yaml)")
 
 	// Set the verbosity
 	RootCmd.PersistentFlags().BoolVarP(&cfg.Verbose, "verbose", "v", cfg.Verbose, "enable verbose logging")
@@ -76,7 +77,7 @@ func init() {
 // initConfig reads in config file and ENV variables if set.
 func initConfig() {
 	// set specific prefix
-	viper.SetEnvPrefix("TEMPLETON")
+	viper.SetEnvPrefix("PENNY")
 
 	// read in files
 	if cfgFile != "" {
@@ -90,9 +91,9 @@ func initConfig() {
 			os.Exit(1)
 		}
 
-		// Search config in home directory with name ".templeton" (without extension).
+		// Search config in home directory with name ".peny" (without extension).
 		viper.AddConfigPath(home)
-		viper.SetConfigName(".templeton")
+		viper.SetConfigName(".penny")
 	}
 
 	viper.AutomaticEnv() // read in environment variables that match
@@ -103,7 +104,7 @@ func initConfig() {
 	}
 }
 
-// runE is running the root command of Templeton
+// runE is running the root command of Penny
 func runE(cmd *cobra.Command, args []string) error {
 	var err error
 

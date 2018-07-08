@@ -1,3 +1,4 @@
+// Copyright 2018 Sebastian Döll
 // Copyright 2018 Axel Springer SE
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,7 +18,7 @@ package run
 import (
 	"sync"
 
-	"github.com/axelspringer/templeton/store"
+	"github.com/andersnormal/penny/store"
 )
 
 // Runner is the interface to a runtime environment

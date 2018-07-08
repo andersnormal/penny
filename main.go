@@ -18,7 +18,7 @@ import (
 	"math/rand"
 	"time"
 
-	"github.com/axelspringer/templeton/cmd"
+	"github.com/andersnormal/penny/cmd"
 )
 
 func init() {

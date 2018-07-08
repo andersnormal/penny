@@ -1,4 +1,9 @@
 # Contributors
 
+* Sebastian Döll
+* SPRING Axel Springer Digital News Media GmbH & Co. KG
+* Axel Springer SE
+
 ## Maintainers
-* YOUR NAME GOES HERE
+
+* Sebastian Döll 

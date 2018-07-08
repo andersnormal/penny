@@ -1,3 +1,4 @@
+// Copyright 2018 Sebastian Döll
 // Copyright 2018 Axel Springer SE
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,8 +18,8 @@ package store
 import (
 	"context"
 
+	config "github.com/andersnormal/penny/cfg"
 	"github.com/aws/aws-sdk-go/service/ssm"
-	config "github.com/axelspringer/templeton/cfg"
 )
 
 var cfg = config.Config

@@ -1,3 +1,4 @@
+// Copyright 2018 Sebastian Döll
 // Copyright 2018 Axel Springer SE
 //
 // Licensed under the Apache License, Version 2.0 (the "License");

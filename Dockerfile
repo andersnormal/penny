@@ -1,3 +1,3 @@
 FROM scratch
-ADD bin/templeton_linux_amd64 /templeton
-CMD ["/templeton"]
+ADD bin/penny_linux_amd64 /penny
+CMD ["/penny"]

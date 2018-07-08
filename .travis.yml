@@ -1,5 +1,4 @@
 language: go
-
 matrix:
   include:
   - go: 1.x
@@ -9,37 +8,32 @@ matrix:
   - go: tip
   allow_failures:
   - go: tip
-
 cache:
   directories:
   - "$GOPATH/src"
   - "$GOPATH/pkg"
-
 install:
 - make deps
 - make restore
 - export CI=TRAVIS
-
 script:
 - make ci
 - if [ "${LATEST}" = "true" ]; then make build/release; fi
-
 deploy:
   provider: releases
   skip_cleanup: true
-  api_key:
-    secure: nMOxrjSQWr6UX2xKYUdcZuxjj5szAKOijEHhSVwtONrZo0b0Bq3O/Q6qp1q/5csZb3cYX9RN8lviDcw9ASNOOF4HSoAF6yqcPCV0C3a1+MduL+56ooGbHAUSGLLmt90dCsjc4HmeJ3X5DZ1D5glYrxSBRuV0PhVbrqKWARkLmdJRLVU/qd9Z2jg8GEGayLqF9EtIilFdxpG8qqsAvKGo+oj3H5Ba0CtIq96m4NFJBS8Atwxj2Eh3FMgZoqlA41iufeD7nQh2Lr1l86sSCtRjU2TNroaS76Ki5mRVQZs5HII/eTep+/jKEwi9sCgEK9uh88UrVBsxJcndTGCvKa85cjpJNVP2AcCfNYO1tBSfEFJwyBy97/lAjy4W13nvM6eVkVeRjza75HAxoK5QPU73qRp4Ak+YIT1N3Tle8KEwg298RGiMD5B2VESrQEfGq2UfPqnzReWmvohoJECajUgE5gsA4lBafsCT9AYks7CyWeRZhjWhOoItHr29CjHgKj5hCzLtViHeEk40x6h1OCcnC1OY5UVNwMY7CRPYRUujodUJpdUDT/aJyBxEZUBwDINI/nRAdqjZS9AbLr436+0iclLmhAQIVCqgIv3wv/amL1N0uDxrvvyuYWRsPoEBf7Ps54nA4jTn/yyN9K9EUV32UGbZsIJ50uodtv3UZO4w8PM=
   file:
-  - bin/templeton
-  - bin/templeton_darwin_386
-  - bin/templeton_darwin_amd64
-  - bin/templeton_linux_386
-  - bin/templeton_linux_amd64
+  - bin/penny
+  - bin/penny_darwin_386
+  - bin/penny_darwin_amd64
+  - bin/penny_linux_386
+  - bin/penny_linux_amd64
   on:
-    repo: axelspringer/templeton
+    repo: andersnormal/penny
     tags: true
     condition: "$LATEST = true"
-
+  api-key:
+    secure: tdS+uQyj6lKw+qDSinO6BLSIYOGBXk7QxTh4ChOoQernc01nnVXaNJL2mO1AanfJ2n3B1p+7VcE44T9xuIKpPuMutTySH4suL4npMi3Crbc/FuwnXj9hV9zRNj3EQ0rk3C8F0QjQwmuHLC8knto9xyP3zQiC54qtFqaJSgSBzBfglcv2U+XtCVxOp5YtmJ5IJIxZS0edDSI1Q//Iq7tHar1QiyXpXNTCbsqsTaZQdLhj/ohRJv48YlnVMl95beZ0qZbsISZcqq+wxaosFIkh0eRqNfEzW491am3DPKLI9vwcYAxXa6SUC7xduNs96UzQtRUq1jkmIKuCaJOV3wqYje9YbrgkJZCRNtG6DVx+EbFqrgz9yW9aAhnOp/A7eu6doT8ZtBJ9mlX8OCI4PH99xVXL7fb5Wjns/aOFV5ySl7c4yPj3yaLGfTPrr7xmnLsr6DlQUDMwI1hXxUHdMDZ+If9INpQ5Uh6QRRN4vNRWbZuWtGESIu9GWIrc2Y8k7bFUu9GSqeu5rxn66+o8SboXk30csKKk/8pkLEDAljq5fMcn9AzPDH8KNDe7oXQYvcYwtQlfxkaB9S86o/aetKfQP3LNNAvSPBAXbu/3/G9VTL7OY1yBzmN2MQYWQTY6SoMVwbkg/odaD64Ei//lzuO/lgUwmg75bK0SXSR8zzaZSIY=
 notifications:
   slack:
-    secure: AFsSpuR72iMFuNdOTlWHd6UhFOA3vfaxeXL66+sbILgPC3X1BedKsSQI8w6UIzEE7umks0suKkpDybJD2Doww4c4jNyuIufW+wiVyigaXy3j+fnSouYeGQG6gRIMm33mrHZWoSwUSSxZRvxwW/qNMzAiHURY1cOIwe7IBK7WOiibfStTBO/YjacTw8KGsKPdJ7yXPMlyPH+Wfks1JGk3iKgFY9K69oaETF6P1Uk/DUjos8OqhF83MNrRj4njFl/iVY/1R9iD3mnicGnzrLnljLBplI21kKIn1VsrLqsuuMBxtBkPLDJKAVZueGAS1JOvbOohsVKIbQcCvsr0qD1AJmCI5Sbt1TZQ/uUFGCvjeP2mekQV+ssk00xsxwulSLP8NLr/EnAJjD9mPKfr7JgLk20V/lacymV3JVbM23S66bV+6fWBm70xuaCKgXCfx7usj3aWGE3kXKc5o5+SKhUVeEbk30ZDIjaPOenayD9JSeYUHHpNTN8MrzZljH70ReKpENam14bJ36N4Rv+jspnVNP6ayWc1jt/Cfw2aU0f5CLik6xWbE7PtYd3Fq9fHb6gXT0zjiAWZnUMqe3L43qqzoJzSKOzKDijAHwew3Y6Mz+1EEbuLQezXCRSXSDxz0tMHYb72yT9SK83eVc1Udwks/CweWbvrZ1puVBXVV9vuQp0=
+    secure: oEvvNJB8094BrEI13EwTuecoqBhgM+N6OyoIQJwFZTwUNnFCRNb77Jzw4ZBFN3DmX52zw/lN8/JQjLfhWuBXncdToat9n47eWnNcd1iN+x1+q6/hWN6gFKJHeGnNIn/a+9ioJF1OzZjbTCX6eq+85PA4b3dKnYWZUNmtllWkwfiIPGAXJ77u3M296ZwxAf1ip3cJT5M3Qyi37KMuVl688ZTPxBEo42k2MtG3hR/lWi2NsnneP9m4GRTSaJIDWRpmWOeUiBUzJ93GaGmFF1u/QKl9naLzBB045vPBpurIE/VZC9pzXpEOHo6aRr9SpNgqyglpi5Xc7JKAFW35kw5XNcl3lWiDLWgHgMJZoCW6lQYM/S5WDFJjSJo9gApvWOp/AtWZdMSTQTq5A80XIhm6/ehhBwkvgfQ3IuLR/epheK7LW/QhQ3tRjF19kWj8A+BTeppKkUvJrN4wr/CAwWGu7ogq1w5a07fOpUgSEng/4TtSkvoMT1ah7NfV1FxrTMQ6Asa8331G6isc4EYO89zMRu1u9uEEVD20TThNtlJ1M09rdr3Zw7uypL4+KKZqMtsFCQA0Nk9cpfNQgQdeMbSNRttTLpOYaPucPDGXvEe4gtiQMCSqupEwTtIHRJvd1SAvnioztlKMihkiRbxqv1Vj0Egjmd8hTirx97WMJDn1vYQ=

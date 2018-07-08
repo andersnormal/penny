@@ -1,3 +1,4 @@
+// Copyright 2018 Sebastian Döll
 // Copyright 2018 Axel Springer SE
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,7 +22,7 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-// CmdConfig contains a current config of Templeton
+// CmdConfig contains a current config of Penny
 type CmdConfig struct {
 	// Verbose toggles the verbosity
 	Verbose bool

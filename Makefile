@@ -5,7 +5,7 @@ RACE := $(shell test $$(go env GOARCH) != "amd64" || (echo "-race"))
 VERSION := `git rev-parse --short HEAD`
 
 # Use linker flags to provide version/build settings to the target
-LDFLAGS=-ldflags "-X=github.com/axelspringer/templeton/version.Version=$(VERSION)"
+LDFLAGS=-ldflags "-X=github.com/axelspringer/penny/version.Version=$(VERSION)"
 
 help:
 	@echo 'Available commands:'
@@ -30,18 +30,18 @@ build:
 	@echo "Compiling..."
 	@mkdir -p ./bin
 	@gox $(LDFLAGS) -output "bin/{{.Dir}}_{{.OS}}_{{.Arch}}" -os="linux" -os="darwin" -arch="386" -arch="amd64" ./
-	@go build -i -o ./bin/templeton
+	@go build -i -o ./bin/penny
 	@echo "All done! The binaries is in ./bin let's have fun!"
 
 build/release:
 	@echo "Compiling..."
 	@mkdir -p ./bin
 	@gox $(LDFLAGS) -tags netgo -ldflags '-w -extldflags "-static"' -output "bin/{{.Dir}}_{{.OS}}_{{.Arch}}" -os="linux" -os="darwin" -arch="386" -arch="amd64" ./
-	@go build -i -o ./bin/templeton
+	@go build -i -o ./bin/penny
 	@echo "All done! The binaries is in ./bin let's have fun!"
  
 build/docker: build
-	@docker build -t templeton:latest .
+	@docker build -t penny:latest .
 
 vet: ## run go vet
 	@test -z "$$(go vet ${PACKAGES} 2>&1 | grep -v '*composite literal uses unkeyed fields|exit status 0)' | tee /dev/stderr)"
