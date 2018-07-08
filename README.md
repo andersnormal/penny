@@ -15,18 +15,24 @@ The most simple case is, that you want to execute a command with all the availab
 > all parameters are prefixed with `SSM` when not otherwise specified
 
 ```
-penny --path /example run echo "$SSM_DEV_PARAMETER
+penny --path /example run printenv
 ```
 
 This would suggest that there is a key in `/example/dev/parameter`.
 
-## Config
+## Usage
 
 You can use `--help` to print out all the available options.
 
+### --force
+
+> this is especially helpful in the case of testing
+
+This forces to run the process, without be able to fetch an env from the parameter store.
+
 ### PENNY_PATH (--path)
 
-Configures the path in the Parameter Store from which to fetch the configs.
+Configures the path in the System Manager Parameter Store from which to fetch the configs.
 
 ## License
 [Apache-2.0](/LICENSE)
