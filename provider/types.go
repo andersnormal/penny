@@ -1,5 +1,4 @@
 // Copyright 2018 Sebastian Döll
-// Copyright 2018 Axel Springer SE
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -13,21 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package main
+package provider
 
-import (
-	"math/rand"
-	"time"
-
-	"github.com/andersnormal/penny/cmd"
-)
-
-func init() {
-	// Seed the default rand Source with current time to produce better random
-	// numbers used with splay
-	rand.Seed(time.Now().UnixNano())
-}
-
-func main() {
-	cmd.Execute()
+// Provider defines the interface to a key/value provider (e.g. etcd)
+type Provider interface {
 }

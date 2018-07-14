@@ -53,17 +53,17 @@ func init() {
 		RunE:  runE,
 	}
 
-	// SSMPAth
-	Cmd.Flags().StringVarP(&cfg.SSMPath, "path", "p", cfg.Region, "path in the parameter store")
+	// Path
+	Cmd.Flags().StringVarP(&cfg.Path, "path", "p", cfg.Path, "path in the parameter store")
 
 	// Recursive lookup
 	Cmd.Flags().BoolVarP(&cfg.Recursive, "recursive", "r", cfg.Recursive, "recursive lookup")
 
 	// With decryption
-	Cmd.Flags().BoolVarP(&cfg.WithDecryption, "decrypt", "d", cfg.WithDecryption, "disable decryption")
+	Cmd.Flags().BoolVarP(&cfg.SSM.WithDecryption, "decrypt", "d", cfg.SSM.WithDecryption, "disable decryption")
 
 	// AWS Region
-	Cmd.Flags().StringVar(&cfg.Region, "region", cfg.Region, "AWS Region")
+	Cmd.Flags().StringVar(&cfg.SSM.Region, "region", cfg.SSM.Region, "AWS Region")
 
 	// Timeout
 	Cmd.Flags().DurationVarP(&cfg.Timeout, "timeout", "t", cfg.Timeout, "timeout of the config (in seconds)")
@@ -94,12 +94,12 @@ func runE(cmd *cobra.Command, args []string) error {
 
 	// new AWS Session
 	session := session.Must(session.NewSession(&aws.Config{
-		Region: aws.String(cfg.Region),
+		Region: aws.String(cfg.SSM.Region),
 	}))
 	ssmSvc := ssm.New(session)
 
 	// set path
-	cfg.SSMPath = viper.GetString("path")
+	cfg.Path = viper.GetString("path")
 
 	// create a new SSM store and SSM environment
 	ssmStore, err := store.Must(ctx, ssmSvc)
@@ -161,7 +161,7 @@ func (e *Run) Env() ([]string, error) {
 
 	// setup env
 	for _, parameter := range e.store.Parameters() {
-		name := strings.TrimPrefix(aws.StringValue(parameter.Name), cfg.SSMPath)
+		name := strings.TrimPrefix(aws.StringValue(parameter.Name), cfg.Path)
 		parts := strings.Split(name, "/")
 		parts = format(notEmpty(parts))
 

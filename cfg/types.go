@@ -36,17 +36,8 @@ type CmdConfig struct {
 	// KillSignal
 	KillSignal syscall.Signal
 
-	// SSMPath is the path to reference in the SSM
-	SSMPath string
-
 	// Recursive lookup
 	Recursive bool
-
-	// With decryption
-	WithDecryption bool
-
-	// AWS Region
-	Region string
 
 	// Timeout of the runtime
 	Timeout time.Duration
@@ -59,4 +50,28 @@ type CmdConfig struct {
 
 	// Force execution
 	Force bool
+
+	// Path specifies the path in a provider
+	Path string
+
+	// SSM exposes an AWS Parameter Store Config
+	SSM *SSMConfig
+}
+
+// SSMConfig is the config for an SSM Parameter Store in AWS
+type SSMConfig struct {
+	// Region specifies the AWS Region
+	Region string
+
+	// WithDecryption specifies to allow to KMS encrypted values
+	WithDecryption bool
+
+	// AccessKeyID specifies an AWS Access Key Id
+	AccessKeyID string
+
+	// SecretKeyID specifies an AWS Secret Key Id
+	SecretKeyID string
+
+	// Token specifies an AWS Access Token
+	Token string
 }

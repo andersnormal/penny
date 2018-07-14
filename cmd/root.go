@@ -70,7 +70,7 @@ func init() {
 	// Set the verbosity
 	RootCmd.PersistentFlags().BoolVarP(&cfg.Verbose, "verbose", "v", cfg.Verbose, "enable verbose logging")
 
-	// Bind to read in
+	// Bind to to read in value
 	viper.BindPFlag("verbose", RootCmd.PersistentFlags().Lookup("verbose"))
 }
 

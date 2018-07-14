@@ -36,9 +36,9 @@ func Must(ctx context.Context, ssm *ssm.SSM) (*SSMStore, error) {
 
 	store.ctx = ctx
 	store.ssm = ssm
-	store.ssmPath = config.String(cfg.SSMPath)
+	store.ssmPath = config.String(cfg.Path)
 	store.recursive = config.Bool(cfg.Recursive)
-	store.withDecryption = config.Bool(cfg.WithDecryption)
+	store.withDecryption = config.Bool(cfg.SSM.WithDecryption)
 
 	_, err = store.getParameters(nil) // harvest err
 

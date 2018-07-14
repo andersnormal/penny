@@ -40,12 +40,6 @@ const (
 	// DefaultRecursive is the default for recursive lookup.
 	DefaultRecursive = true
 
-	// DefaultWithDecryption is the default for decryption.
-	DefaultWithDecryption = true
-
-	// DefaultRegion is the default AWS region
-	DefaultRegion = "eu-west-1"
-
 	// DefaultTimeout is the default time to configure the runtime
 	DefaultTimeout = 60
 
@@ -57,21 +51,31 @@ const (
 
 	// DefaultForce for environment setup
 	DefaultForce = false
+
+	// DefaultSSMWithDecryption for SSM decryption
+	DefaultSSMWithDecryption = true
+
+	// DefaultSSMRegion is the default AWS region
+	DefaultSSMRegion = "eu-west-1"
 )
 
 func init() {
+	ssm := &SSMConfig{
+		Region:         DefaultSSMRegion,
+		WithDecryption: DefaultSSMWithDecryption,
+	}
+
 	Config = &CmdConfig{
-		Verbose:        DefaultVerbose,
-		LogLevel:       DefaultLogLevel,
-		ReloadSignal:   DefaultReloadSignal,
-		KillSignal:     DefaultKillSignal,
-		WithDecryption: DefaultWithDecryption,
-		Recursive:      DefaultRecursive,
-		Prefix:         DefaultPrefix,
-		Region:         DefaultRegion,
-		Timeout:        DefaultTimeout,
-		Overwrite:      DefaultOverwrite,
-		Force:          DefaultForce,
+		Verbose:      DefaultVerbose,
+		LogLevel:     DefaultLogLevel,
+		ReloadSignal: DefaultReloadSignal,
+		KillSignal:   DefaultKillSignal,
+		Recursive:    DefaultRecursive,
+		Prefix:       DefaultPrefix,
+		Timeout:      DefaultTimeout,
+		Overwrite:    DefaultOverwrite,
+		Force:        DefaultForce,
+		SSM:          ssm,
 	}
 }
 
