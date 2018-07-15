@@ -1,5 +1,4 @@
 // Copyright 2018 Sebastian Döll
-// Copyright 2018 Axel Springer SE
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -13,24 +12,4 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package run
-
-import (
-	"sync"
-
-	"github.com/andersnormal/penny/provider"
-)
-
-// Runner is the interface to a runtime environment
-type Runner interface {
-	// Setup should setup the runtime environment
-	Exec() error
-}
-
-// Run is a runtime environment for SSM
-type Run struct {
-	sync.Mutex
-
-	args      []string
-	providers *provider.Provider
-}
+package ssm

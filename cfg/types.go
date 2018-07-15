@@ -60,6 +60,9 @@ type CmdConfig struct {
 
 // SSMConfig is the config for an SSM Parameter Store in AWS
 type SSMConfig struct {
+	// Enable is enabling the SSM provider
+	Enable bool
+
 	// Region specifies the AWS Region
 	Region string
 

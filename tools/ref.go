@@ -1,5 +1,4 @@
-// Copyright 2018 Sebastian Döll
-// Copyright 2018 Axel Springer SE
+// Copyright 2018 Sebstian Döll
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -13,24 +12,19 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package run
+package tools
 
-import (
-	"sync"
-
-	"github.com/andersnormal/penny/provider"
-)
-
-// Runner is the interface to a runtime environment
-type Runner interface {
-	// Setup should setup the runtime environment
-	Exec() error
+// Bool returns a pointer to a boolean
+func Bool(f bool) *bool {
+	return &f
 }
 
-// Run is a runtime environment for SSM
-type Run struct {
-	sync.Mutex
+// String returns a pointer to a string
+func String(f string) *string {
+	return &f
+}
 
-	args      []string
-	providers *provider.Provider
+// StringValue returns the value of a pointer to a String
+func StringValue(f *string) string {
+	return *f
 }

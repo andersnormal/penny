@@ -78,13 +78,3 @@ func init() {
 		SSM:          ssm,
 	}
 }
-
-// Bool returns a pointer to a boolean
-func Bool(f bool) *bool {
-	return &f
-}
-
-// String returns a pointer to a string
-func String(f string) *string {
-	return &f
-}

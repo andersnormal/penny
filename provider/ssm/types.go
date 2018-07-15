@@ -1,5 +1,4 @@
 // Copyright 2018 Sebastian Döll
-// Copyright 2018 Axel Springer SE
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -13,28 +12,22 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package store
+package ssm
 
 import (
-	"context"
 	"sync"
 
+	config "github.com/andersnormal/penny/cfg"
+	"github.com/andersnormal/penny/provider"
 	"github.com/aws/aws-sdk-go/service/ssm"
 )
 
-// ParameterStore represents the interface to the parameter store of SSM which needs to be implemented.
-type ParameterStore interface {
-	Parameters() ([]*ssm.Parameter, error)
-}
+// Provider holds the SSM provider
+type Provider struct {
+	provider.AbstractProvider
 
-// SSMStore contains the data, and clients to access the paramter store of SSM
-type SSMStore struct {
-	recursive      *bool
-	withDecryption *bool
-	parameters     []*ssm.Parameter
-	ssm            *ssm.SSM
-	ssmPath        *string
+	ssm *ssm.SSM
+	cfg *config.SSMConfig
 
-	ctx context.Context
 	mux sync.Mutex
 }

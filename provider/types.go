@@ -14,6 +14,20 @@
 
 package provider
 
+import "context"
+
 // Provider defines the interface to a key/value provider (e.g. etcd)
 type Provider interface {
+	ListWithContext(ctx context.Context, dir string, recursive bool) ([]*KVPair, error)
+}
+
+// KVPair represents a { Key, Value } tuple
+type KVPair struct {
+	Key   string
+	Value []byte
+}
+
+// AbstractProvider is the base provider with all providers inherit from
+type AbstractProvider struct {
+	Enable bool
 }
