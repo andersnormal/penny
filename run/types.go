@@ -31,6 +31,6 @@ type Runner interface {
 type Run struct {
 	sync.Mutex
 
-	args      []string
-	providers *provider.Provider
+	args   []string
+	kvPair []*provider.KVPair
 }

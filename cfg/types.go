@@ -69,12 +69,6 @@ type SSMConfig struct {
 	// WithDecryption specifies to allow to KMS encrypted values
 	WithDecryption bool
 
-	// AccessKeyID specifies an AWS Access Key Id
-	AccessKeyID string
-
-	// SecretKeyID specifies an AWS Secret Key Id
-	SecretKeyID string
-
 	// Token specifies an AWS Access Token
 	Token string
 }

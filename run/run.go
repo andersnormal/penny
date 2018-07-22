@@ -16,12 +16,20 @@
 package run
 
 import (
+	"context"
+	"fmt"
 	"strings"
+	"time"
 
+	"github.com/aws/aws-sdk-go/aws"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 
 	config "github.com/andersnormal/penny/cfg"
+	"github.com/andersnormal/penny/provider"
+	s "github.com/andersnormal/penny/provider/ssm"
+	"github.com/aws/aws-sdk-go/aws/session"
+	"github.com/aws/aws-sdk-go/service/ssm"
 )
 
 // Cmd exports the run command
@@ -49,11 +57,11 @@ func init() {
 	// Enable SSM
 	Cmd.Flags().BoolVar(&cfg.SSM.Enable, "ssm", cfg.SSM.Enable, "enable SSM Parameter Store")
 
-	// Recursive lookup
+	// Enable SSM Recursive
 	Cmd.Flags().BoolVarP(&cfg.Recursive, "recursive", "r", cfg.Recursive, "recursive lookup")
 
 	// With decryption
-	Cmd.Flags().BoolVarP(&cfg.SSM.WithDecryption, "ssm-decrypt", "d", cfg.SSM.WithDecryption, "disable decryption")
+	Cmd.Flags().BoolVar(&cfg.SSM.WithDecryption, "ssm-decrypt", cfg.SSM.WithDecryption, "disable decryption")
 
 	// AWS Region
 	Cmd.Flags().StringVar(&cfg.SSM.Region, "ssm-region", cfg.SSM.Region, "AWS Region")
@@ -79,11 +87,25 @@ func init() {
 
 func runE(cmd *cobra.Command, args []string) error {
 	// new Run
-	// var run = new(Run)
+	var run = new(Run)
+	var p interface{}
 
-	// // create new ctx
-	// ctx, cancel := context.WithTimeout(context.Background(), cfg.Timeout*time.Second)
-	// defer cancel()
+	// create new ctx
+	ctx, cancel := context.WithTimeout(context.Background(), cfg.Timeout*time.Second)
+	defer cancel()
+
+	// if SSM is enabled
+	if cfg.SSM.Enable {
+		session := session.Must(session.NewSession(&aws.Config{
+			Region: aws.String(cfg.SSM.Region),
+		}))
+		ssmSvc := ssm.New(session)
+		p = s.Must(ssmSvc, cfg.SSM)
+	}
+
+	if p != nil {
+		run.listWithContext(ctx, p.(provider.Provider))
+	}
 
 	// new AWS Session
 	// session := session.Must(session.NewSession(&aws.Config{
@@ -110,6 +132,16 @@ func runE(cmd *cobra.Command, args []string) error {
 	// run.Exec()
 
 	return nil // noop
+}
+
+func (r *Run) listWithContext(ctx context.Context, p provider.Provider) error {
+	var err error
+
+	kv, err := p.ListWithContext(ctx, cfg.Path, cfg.Recursive)
+
+	fmt.Println(kv)
+
+	return err
 }
 
 // Exec is setting up the environment with the configured store
