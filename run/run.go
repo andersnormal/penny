@@ -17,7 +17,10 @@ package run
 
 import (
 	"context"
+	"errors"
 	"fmt"
+	"os"
+	"os/exec"
 	"strings"
 	"time"
 
@@ -88,7 +91,7 @@ func init() {
 func runE(cmd *cobra.Command, args []string) error {
 	// new Run
 	var run = new(Run)
-	var p interface{}
+	var err error
 
 	// create new ctx
 	ctx, cancel := context.WithTimeout(context.Background(), cfg.Timeout*time.Second)
@@ -99,127 +102,101 @@ func runE(cmd *cobra.Command, args []string) error {
 		session := session.Must(session.NewSession(&aws.Config{
 			Region: aws.String(cfg.SSM.Region),
 		}))
-		ssmSvc := ssm.New(session)
-		p = s.Must(ssmSvc, cfg.SSM)
+		svc := ssm.New(session)
+		run.provider = s.Must(svc, cfg.SSM)
 	}
 
-	if p != nil {
-		run.listWithContext(ctx, p.(provider.Provider))
+	// if there is configured provider
+	if run.provider != nil {
+		err = run.GetKVPair(ctx)
 	}
 
-	// new AWS Session
-	// session := session.Must(session.NewSession(&aws.Config{
-	// 	Region: aws.String(cfg.SSM.Region),
-	// }))
-	// ssmSvc := ssm.New(session)
+	if err != nil && !cfg.Force {
+		return err
+	}
 
-	// // set path
-	// cfg.Path = viper.GetString("path")
-
-	// // create a new SSM store and SSM environment
-	// ssmStore, err := store.Must(ctx, ssmSvc)
-	// if !cfg.Force && err != nil {
-	// 	return err
-	// }
-
-	viper.Debug()
-
-	// // configure run
-	// run.store = ssmStore
-	// run.args = args
+	// configure run
+	run.args = args
 
 	// do simple execute, should be more complex later
-	// run.Exec()
+	run.Exec()
 
 	return nil // noop
 }
 
-func (r *Run) listWithContext(ctx context.Context, p provider.Provider) error {
+// GetKVPair is retrieving KV pairs from a configured KV provider
+func (r *Run) GetKVPair(ctx context.Context) error {
 	var err error
+	var p = r.provider.(provider.Provider)
 
 	kv, err := p.ListWithContext(ctx, cfg.Path, cfg.Recursive)
+	if err != nil {
+		return err
+	}
 
-	fmt.Println(kv)
+	r.kvPair = append(r.kvPair, kv...)
 
 	return err
 }
 
 // Exec is setting up the environment with the configured store
-// func (e *Run) Exec() error {
-// 	var err error
-// 	var execCmd string
-// 	var execArgs []string
+func (r *Run) Exec() error {
+	var err error
+	var execCmd string
+	var execArgs []string
 
-// 	if len(e.args) > 0 {
-// 		execCmd = e.args[0]
-// 	}
-
-// 	if len(e.args) > 1 {
-// 		execArgs = append(execArgs, e.args[1:]...)
-// 	}
-
-// 	cmd := exec.Command(execCmd, execArgs...)
-// 	cmd.Stdout = os.Stdout
-// 	cmd.Stderr = os.Stderr
-
-// 	env, err := e.Env()
-// 	if !cfg.Force && err != nil {
-// 		return err
-// 	}
-// 	cmd.Env = append(os.Environ(), env...)
-
-// 	// todo: listen for syscalls
-
-// 	// exec
-// 	err = cmd.Start()
-// 	if err != nil {
-// 		return err
-// 	}
-
-// 	err = cmd.Wait()
-
-// 	return err // on error
-// }
-
-// // Env returns an environment
-// func (e *Run) Env() ([]string, error) {
-// 	var err error
-// 	var env []string
-
-// 	// setup env
-// 	for _, parameter := range e.store.Parameters() {
-// 		name := strings.TrimPrefix(aws.StringValue(parameter.Name), cfg.Path)
-// 		parts := strings.Split(name, "/")
-// 		parts = format(notEmpty(parts))
-
-// 		// prefix
-// 		parts = append([]string{cfg.Prefix}, parts...)
-
-// 		key := strings.Join(parts, "_")
-// 		if _, ok := os.LookupEnv(key); ok && !cfg.Overwrite {
-// 			return env, errors.New("could not")
-// 		}
-
-// 		env = append(env, fmt.Sprintf("%s=%s", key, aws.StringValue(parameter.Value)))
-// 	}
-
-// 	return env, err
-// }
-
-func format(s []string) []string {
-	var r []string
-	for _, str := range s {
-		r = append(r, strings.ToUpper(str))
+	if len(r.args) > 0 {
+		execCmd = r.args[0]
 	}
-	return r
+
+	if len(r.args) > 1 {
+		execArgs = append(execArgs, r.args[1:]...)
+	}
+
+	cmd := exec.Command(execCmd, execArgs...)
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+
+	env, err := r.Env()
+	if !cfg.Force && err != nil {
+		return err
+	}
+	cmd.Env = append(os.Environ(), env...)
+
+	// todo: listen for syscalls
+
+	// exec
+	err = cmd.Start()
+	if err != nil {
+		return err
+	}
+
+	err = cmd.Wait()
+
+	return err // on error
 }
 
-func notEmpty(s []string) []string {
-	var r []string
-	for _, str := range s {
-		if str != "" {
-			r = append(r, str)
+// Env returns an environment
+func (r *Run) Env() ([]string, error) {
+	var err error
+	var env []string
+
+	// setup env
+	for _, parameter := range r.kvPair {
+		name := strings.TrimPrefix(parameter.Key, cfg.Path)
+		parts := strings.Split(name, "/")
+		parts = format(notEmpty(parts))
+
+		// prefix
+		parts = append([]string{cfg.Prefix}, parts...)
+
+		key := strings.Join(parts, "_")
+		if _, ok := os.LookupEnv(key); ok && !cfg.Overwrite {
+			return env, errors.New("could not")
 		}
+
+		env = append(env, fmt.Sprintf("%s=%s", key, parameter.Value))
 	}
-	return r
+
+	return env, err
 }

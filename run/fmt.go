@@ -15,23 +15,22 @@
 
 package run
 
-import (
-	"sync"
+import "strings"
 
-	"github.com/andersnormal/penny/provider"
-)
-
-// Runner is the interface to a runtime environment
-type Runner interface {
-	// Setup should setup the runtime environment
-	Exec() error
+func format(s []string) []string {
+	var r []string
+	for _, str := range s {
+		r = append(r, strings.ToUpper(str))
+	}
+	return r
 }
 
-// Run is a runtime environment for SSM
-type Run struct {
-	sync.Mutex
-
-	args     []string
-	provider interface{}
-	kvPair   []*provider.KVPair
+func notEmpty(s []string) []string {
+	var r []string
+	for _, str := range s {
+		if str != "" {
+			r = append(r, str)
+		}
+	}
+	return r
 }

@@ -5,7 +5,12 @@
 
 # Penny
 
-Penny is a tool to run commands in [Docker](https://docker.io) with a preconfigured environment from the [System Manager Parameter Store](https://docs.aws.amazon.com/systems-manager/latest/userguide/systems-manager-paramstore.html). It does fetches the values from a configured parameter store path and configures the runtime environment of the command to execute.
+Penny is a tool to run commands in K/V pre-configured environments. It is especially useful in [Docker](https://docker.io) containers.
+
+The supported K/V providers are
+
+* [System Manager Parameter Store](https://docs.aws.amazon.com/systems-manager/latest/userguide/systems-manager-paramstore.html)
+* libkv (comming soon)
 
 ## Getting Started
 
