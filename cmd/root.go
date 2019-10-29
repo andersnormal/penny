@@ -1,122 +1,88 @@
-// Copyright 2018 Sebastian Döll
-// Copyright 2018 Axel Springer SE
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//     http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
-
 package cmd
 
 import (
-	"fmt"
 	"os"
 
-	config "github.com/andersnormal/penny/cfg"
-	"github.com/andersnormal/penny/run"
-	"github.com/andersnormal/penny/version"
-	homedir "github.com/mitchellh/go-homedir"
+	"github.com/andersnormal/penny/pkg/config"
+
+	"github.com/pkg/errors"
+	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
 
-var (
-	cfgFile string
-	cfg     = config.Config
-)
+var cfg *config.Config
+var build string
 
 // RootCmd represents the base command when called without any subcommands
 var RootCmd = &cobra.Command{
 	Use:   "penny",
-	Short: "Executes a subprocess with environment variables from SSM",
-	RunE:  runE,
+	Short: "Penny is the nanny for your container commands",
+	Long: `
+		Penny wraps your command and executes it in the environment you configure.
+  	`,
+	PreRunE: preRunE,
+	RunE:    runE,
+	Version: build,
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.
 // This is called by main.main(). It only needs to happen once to the rootCmd.
 func Execute() {
 	if err := RootCmd.Execute(); err != nil {
-		fmt.Println(err)
 		os.Exit(1)
 	}
 }
 
+func preRunE(cmd *cobra.Command, args []string) error {
+	return nil
+}
+
 func init() {
-	// Init Cobra config
-	cobra.OnInitialize(initConfig)
+	// init config
+	cfg = config.New()
 
 	// silence on the root cmd
 	RootCmd.SilenceErrors = true
 	RootCmd.SilenceUsage = true
 
-	// add run command
-	RootCmd.AddCommand(run.Cmd)
+	// initialize cobra
+	cobra.OnInitialize(initConfig)
 
-	// add version command
-	RootCmd.AddCommand(version.Cmd)
+	// adding flags
+	addFlags(RootCmd, cfg)
 
-	// Here you will define your flags and configuration settings.
-	// Cobra supports persistent flags, which, if defined here,
-	// will be global for your application.
-	RootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.penny.yaml)")
-
-	// Set the verbosity
-	RootCmd.PersistentFlags().BoolVarP(&cfg.Verbose, "verbose", "v", cfg.Verbose, "enable verbose logging")
-
-	// Bind to to read in value
-	viper.BindPFlag("verbose", RootCmd.PersistentFlags().Lookup("verbose"))
+	// set the default format, which is basically text
+	log.SetFormatter(&log.TextFormatter{})
 }
 
 // initConfig reads in config file and ENV variables if set.
 func initConfig() {
-	// set specific prefix
-	viper.SetEnvPrefix("PENNY")
-
-	// read in files
-	if cfgFile != "" {
-		// Use config file from the flag.
-		viper.SetConfigFile(cfgFile)
-	} else {
-		// Find home directory.
-		home, err := homedir.Dir()
-		if err != nil {
-			fmt.Println(err)
-			os.Exit(1)
-		}
-
-		// Search config in home directory with name ".penny" (without extension).
-		viper.AddConfigPath(home)
-		viper.SetConfigName(".penny")
-	}
-
+	// allow to read in from environment
+	viper.SetEnvPrefix("penny")
 	viper.AutomaticEnv() // read in environment variables that match
 
-	// If a config file is found, read it in.
-	if err := viper.ReadInConfig(); err == nil {
-		fmt.Println("Using config file:", viper.ConfigFileUsed())
+	// unmarshal to config
+	if err := viper.Unmarshal(&cfg); err != nil {
+		log.Fatalf(errors.Wrap(err, "cannot unmarshal config").Error())
 	}
+
+	// config logger
+	logConfig(cfg)
 }
 
-// runE is running the root command of Penny
-func runE(cmd *cobra.Command, args []string) error {
-	var err error
+func logConfig(cfg *config.Config) {
+	// reset log format
+	if cfg.LogFormat == "json" {
+		log.SetFormatter(&log.JSONFormatter{})
+	}
 
-	return err // noop
+	if cfg.Verbose {
+		cfg.LogLevel = "info"
+	}
 
-	// save for latet
-	// for {
-	// 	select {
-	// 	case <-ctx.Done():
-	// 		err = ctx.Err()
-	// 		return err
-	// 	default:
-	// 	}
-	// }
+	// set the configured log level
+	if level, err := log.ParseLevel(cfg.LogLevel); err == nil {
+		log.SetLevel(level)
+	}
 }

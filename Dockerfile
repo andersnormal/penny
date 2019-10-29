@@ -1,3 +1,10 @@
+FROM alpine:latest as builder
+
+RUN apk --update add ca-certificates
+
 FROM scratch
-ADD bin/penny_linux_amd64 /penny
-CMD ["/penny"]
+
+COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
+COPY penny /
+
+ENTRYPOINT ["/penny"]

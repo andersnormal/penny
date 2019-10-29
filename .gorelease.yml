@@ -1,0 +1,52 @@
+project_name: penny
+
+env:
+  - CGO_ENABLED=0
+  - GO111MODULE=on
+
+builds:
+  -
+    id: penny
+    binary: penny
+    main: main.go
+    flags:
+      - -mod=vendor
+      - -s -w -X github.com/andersnormal/penny/cmd.build={{.Version}}
+    goos:
+      - windows
+      - darwin
+      - linux
+    goarch:
+      - 386
+      - amd64
+    ignore:
+      - goos: darwin
+        goarch: 386
+
+release:
+  draft: false
+
+snapshot:
+  name_template: "{{.Tag}}"
+
+checksum:
+  name_template: "penny_checksums.txt"
+
+archives:
+  -
+    id: penny
+    builds:
+    - penny
+    name_template: "penny_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+
+dockers:
+  -
+    dockerfile: Dockerfile
+    goos: linux
+    goarch: amd64
+    binaries:
+      - penny
+    image_templates:
+     - "andersnormal/{{.ProjectName}}:latest"
+     - "andersnormal/{{.ProjectName}}:{{ .Tag }}"
+     - "andersnormal/{{.ProjectName}}"
