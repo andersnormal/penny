@@ -11,6 +11,7 @@ builds:
     main: main.go
     flags:
       - -mod=vendor
+    ldflags:
       - -s -w -X github.com/andersnormal/penny/cmd.build={{.Version}}
     goos:
       - windows
