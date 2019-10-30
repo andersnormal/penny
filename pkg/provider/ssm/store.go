@@ -68,8 +68,8 @@ func (p *Provider) listWithContext(ctx context.Context, dir string, recursive bo
 
 func parameterKVPair(param *ssm.Parameter) *provider.KVPair {
 	return &provider.KVPair{
-		Value: []byte(t.StringValue(param.Value)),
-		Key:   t.StringValue(param.Name),
+		Value: []byte(aws.StringValue(param.Value)),
+		Key:   aws.StringValue(param.Name),
 	}
 }
 
