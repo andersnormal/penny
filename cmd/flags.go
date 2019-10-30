@@ -9,10 +9,10 @@ import (
 func addFlags(cmd *cobra.Command, cfg *c.Config) {
 	// set the config file
 	cmd.Flags().StringVar(&cfg.File, "config", "", "config file (default is $HOME/.autobot.yaml")
-	// enable verbose output
-	cmd.Flags().BoolVar(&cfg.Verbose, "verbose", c.DefaultVerbose, "enable verbose output")
+	// disable log
+	cmd.Flags().BoolVar(&cfg.Logger.Enabled, "log", c.DefaultLogger, "enable log")
 	// set log format
-	cmd.Flags().StringVar(&cfg.LogFormat, "log-format", c.DefaultLogFormat, "log format (default is 'text')")
+	cmd.Flags().StringVar(&cfg.Logger.Format, "log-format", c.DefaultLoggerFormat, "log format (default is 'text')")
 	// set log level
-	cmd.Flags().StringVar(&cfg.LogLevel, "log-level", c.DefaultLogLevel, "log level (default is 'warn'")
+	cmd.Flags().StringVar(&cfg.Logger.Level, "log-level", c.DefaultLoggerLevel, "log level (default is 'warn'")
 }

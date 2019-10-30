@@ -43,7 +43,7 @@ func init() {
 	cfg = config.New()
 
 	// silence on the root cmd
-	RootCmd.SilenceErrors = true
+	RootCmd.SilenceErrors = false
 	RootCmd.SilenceUsage = true
 
 	// initialize cobra
@@ -65,24 +65,5 @@ func initConfig() {
 	// unmarshal to config
 	if err := viper.Unmarshal(&cfg); err != nil {
 		log.Fatalf(errors.Wrap(err, "cannot unmarshal config").Error())
-	}
-
-	// config logger
-	logConfig(cfg)
-}
-
-func logConfig(cfg *config.Config) {
-	// reset log format
-	if cfg.LogFormat == "json" {
-		log.SetFormatter(&log.JSONFormatter{})
-	}
-
-	if cfg.Verbose {
-		cfg.LogLevel = "info"
-	}
-
-	// set the configured log level
-	if level, err := log.ParseLevel(cfg.LogLevel); err == nil {
-		log.SetLevel(level)
 	}
 }

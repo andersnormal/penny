@@ -10,23 +10,33 @@ type Config struct {
 	File string
 	// Verbose toggles the verbosity
 	Verbose bool
-	// LogLevel is the level with with to log for this config
-	LogLevel string `mapstructure:"log_level"`
-	// LogFormat is the format that is used for logging
-	LogFormat string `mapstructure:"log_format"`
 	// ReloadSignal
 	ReloadSignal syscall.Signal
 	// TermSignal
 	TermSignal syscall.Signal
 	// KillSignal
 	KillSignal syscall.Signal
+	// Logger ...
+	Logger *Logger
+}
+
+// Logger ...
+type Logger struct {
+	// Enabled ...
+	Enabled bool
+	// Level ...
+	Level string
+	// Format ...
+	Format string
 }
 
 const (
-	// DefaultLogLevel is the default logging level.
-	DefaultLogLevel = "warn"
-	// DefaultLogFormat is the default format of the logger
-	DefaultLogFormat = "text"
+	// DefaultLogger ...
+	DefaultLogger = false
+	// DefaultLoggerLevel is the default logging level.
+	DefaultLoggerLevel = "warn"
+	// DefaultLoggerFormat is the default format of the logger
+	DefaultLoggerFormat = "text"
 	// DefaultTermSignal is the signal to term the agent.
 	DefaultTermSignal = syscall.SIGTERM
 	// DefaultReloadSignal is the default signal for reload.
@@ -40,9 +50,12 @@ const (
 // New returns a new Config
 func New() *Config {
 	return &Config{
-		Verbose:      DefaultVerbose,
-		LogLevel:     DefaultLogLevel,
-		LogFormat:    DefaultLogFormat,
+		Verbose: DefaultVerbose,
+		Logger: &Logger{
+			Enabled: DefaultLogger,
+			Level:   DefaultLoggerLevel,
+			Format:  DefaultLoggerFormat,
+		},
 		ReloadSignal: DefaultReloadSignal,
 		TermSignal:   DefaultTermSignal,
 		KillSignal:   DefaultKillSignal,

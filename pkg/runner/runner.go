@@ -4,6 +4,10 @@ import (
 	"context"
 	"os"
 	"os/exec"
+
+	"github.com/andersnormal/penny/pkg/config"
+
+	log "github.com/sirupsen/logrus"
 )
 
 // Runner ...
@@ -11,11 +15,13 @@ type Runner interface {
 	Exec(context.Context, []string, ...string) error
 }
 
-type runner struct{}
+type runner struct {
+	cfg *config.Config
+}
 
 // New ...
-func New() Runner {
-	r := new(runner)
+func New(cfg *config.Config) Runner {
+	r := newRunner(cfg)
 
 	return r
 }
@@ -34,9 +40,18 @@ func (r *runner) Exec(ctx context.Context, env []string, args ...string) error {
 	}
 
 	cmd := exec.CommandContext(ctx, execCmd, execArgs...)
+
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 	cmd.Env = append(os.Environ(), env...)
+
+	if r.cfg.Logger.Enabled {
+		r.logConfig(cmd)
+	}
+
+	if err := cmd.Start(); err != nil {
+		return err
+	}
 
 	if err := cmd.Wait(); err != nil {
 		return err
@@ -45,8 +60,27 @@ func (r *runner) Exec(ctx context.Context, env []string, args ...string) error {
 	return nil
 }
 
-func newRunner() *runner {
+func (r *runner) logConfig(cmd *exec.Cmd) {
+	ll := log.New()
+	ll.SetFormatter(&log.TextFormatter{})
+
+	// reset log format
+	if r.cfg.Logger.Format == "json" {
+		ll.SetFormatter(&log.JSONFormatter{})
+	}
+
+	// set the configured log level
+	if level, err := log.ParseLevel(r.cfg.Logger.Level); err == nil {
+		ll.SetLevel(level)
+	}
+
+	cmd.Stdout = ll.WriterLevel(log.InfoLevel)
+	cmd.Stderr = ll.WriterLevel(log.ErrorLevel)
+}
+
+func newRunner(cfg *config.Config) *runner {
 	r := new(runner)
+	r.cfg = cfg
 
 	return r
 }
