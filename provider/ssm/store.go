@@ -17,7 +17,8 @@ package ssm
 import (
 	"context"
 
-	config "github.com/andersnormal/penny/cfg"
+	config "github.com/andersnormal/penny/pkg/cfg"
+
 	"github.com/andersnormal/penny/provider"
 	t "github.com/andersnormal/penny/tools"
 	"github.com/aws/aws-sdk-go/service/ssm"
