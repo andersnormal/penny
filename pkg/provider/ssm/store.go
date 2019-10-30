@@ -6,7 +6,7 @@ import (
 
 	"github.com/andersnormal/penny/pkg/provider"
 
-	t "github.com/andersnormal/penny/tools"
+	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/ssm"
 )
 
@@ -39,8 +39,8 @@ func (p *Provider) listWithContext(ctx context.Context, dir string, recursive bo
 
 	// input to the SSM to get parameters by path
 	input := &ssm.GetParametersByPathInput{
-		Path:      t.String(dir),
-		Recursive: t.Bool(recursive),
+		Path:      aws.String(dir),
+		Recursive: aws.Bool(recursive),
 		// WithDecryption: t.Bool(p.cfg.WithDecryption),
 	}
 
