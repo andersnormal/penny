@@ -17,7 +17,6 @@ type Provider struct {
 	provider.AbstractProvider
 
 	ssm *ssm.SSM
-
 	mux sync.Mutex
 }
 
