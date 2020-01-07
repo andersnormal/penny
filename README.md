@@ -5,7 +5,7 @@
 
 # Penny
 
-Penny is a tool to run commands in K/V pre-configured environments. It is especially useful in [Docker](https://docker.io) containers.
+Penny is a tool to run commands in K/V pre-configured environments. It is especially useful in [Docker](https://docker.io) containers to populate the environment with secrets.
 
 The supported K/V providers are
 
@@ -23,7 +23,7 @@ The most simple case is, that you want to execute a command with all the availab
 penny --path /example run printenv
 ```
 
-This would suggest that there is a key in `/example/dev/parameter`.
+This would suggest that there is a key in `/example/parameter`.
 
 ## Usage
 
@@ -38,6 +38,10 @@ This forces to run the process, without be able to fetch an env from the paramet
 ### PENNY_PATH (--path)
 
 Configures the path in the System Manager Parameter Store from which to fetch the configs.
+
+### PREFIX (--prefix)
+
+Configures the prefix for the parameters that are in the path (e.g. SSM_MY_SECRET)
 
 ## License
 [Apache-2.0](/LICENSE)

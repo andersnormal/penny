@@ -5,10 +5,8 @@ import (
 
 	"github.com/andersnormal/penny/pkg/config"
 
-	"github.com/pkg/errors"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
 )
 
 var cfg *config.Config
@@ -19,7 +17,7 @@ var RootCmd = &cobra.Command{
 	Use:   "penny",
 	Short: "Penny is the nanny for your container commands",
 	Long: `
-		Penny wraps your command and executes it in the environment you configure.
+		Penny wraps your command and executes in a prepopulated environment.
   	`,
 	PreRunE: preRunE,
 	RunE:    runE,
@@ -46,24 +44,9 @@ func init() {
 	RootCmd.SilenceErrors = false
 	RootCmd.SilenceUsage = true
 
-	// initialize cobra
-	cobra.OnInitialize(initConfig)
-
 	// adding flags
 	addFlags(RootCmd, cfg)
 
 	// set the default format, which is basically text
 	log.SetFormatter(&log.TextFormatter{})
-}
-
-// initConfig reads in config file and ENV variables if set.
-func initConfig() {
-	// allow to read in from environment
-	viper.SetEnvPrefix("penny")
-	viper.AutomaticEnv() // read in environment variables that match
-
-	// unmarshal to config
-	if err := viper.Unmarshal(&cfg); err != nil {
-		log.Fatalf(errors.Wrap(err, "cannot unmarshal config").Error())
-	}
 }
